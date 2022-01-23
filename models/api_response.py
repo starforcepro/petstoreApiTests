@@ -9,12 +9,18 @@ class ApiResponse:
     message: str
     status_code: int
 
+    def __init__(self, code=None, type=None, message=None, status_code=None):
+        self.code = code
+        self.type = type
+        self.message = message
+        self.status_code = status_code
+
     @classmethod
     def build_from(cls, raw_api_response: Response):
-        create_user_response_dict = json.loads(raw_api_response.text)
-        cls.code = create_user_response_dict.get('code')
-        cls.type = create_user_response_dict.get('type')
-        cls.message = create_user_response_dict.get('message')
-        cls.status_code = raw_api_response.status_code
+        if not raw_api_response.text:
+            return cls(status_code=raw_api_response.status_code)
 
-        return cls
+        instance = cls(**json.loads(raw_api_response.text))
+        instance.status_code = raw_api_response.status_code
+
+        return instance

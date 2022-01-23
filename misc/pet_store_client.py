@@ -1,6 +1,7 @@
 import requests
 
 from models.create_user_response import CreateUserResponse
+from models.delete_user_response import DeleteUserResponse
 from models.find_user_response import FindUserResponse
 from models.user import User
 
@@ -34,4 +35,6 @@ class UserActions:
 
     def delete(self, username):
         headers = {'api_key': 'special_key'}
-        requests.delete(f"{self.url}/{username}", headers=headers)
+        response = requests.delete(f"{self.url}/{username}", headers=headers)
+
+        return DeleteUserResponse.build_from(response)
